@@ -12,14 +12,24 @@ app.get('/', (req, res) => {
     res.send('<h1>Hello..</h1>')
 })
 
-app.get('/api/persons', (req, res) => {
-    res.json(persons)
-})
-
 app.get('/info', (req, res) => {
     let time = Date()
     res.send(`<p>Phonebook has info for ${persons.length} people</p>
     <p>${time.toString()}</p>`)
+})
+
+app.get('/api/persons', (req, res) => {
+    res.json(persons)
+})
+
+app.get('/api/persons/:id', (req, res) => {
+    const id = Number(req.params.id)
+    const person = persons.find(note => note.id === id)
+    if (person) {
+        res.json(person)
+    } else {
+        res.status(404).end()
+    }
 })
 
 const PORT = 3001

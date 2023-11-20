@@ -3,9 +3,8 @@ const morgan = require('morgan')
 
 const app = express()
 
-
 app.use(express.json())
-app.use(morgan('tiny'))
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
 let persons = [
     {id: 1, name: "Arto Hellas", number: "040-123456"},
@@ -74,6 +73,10 @@ app.post('/api/persons', (req, res) => {
     
     persons = persons.concat(person)
     res.json(person)
+
+    morgan.token('body', req => {
+        return JSON.stringify(req.body)
+    })
 })
 
 const PORT = 3001

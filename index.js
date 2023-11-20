@@ -1,7 +1,11 @@
 const express = require('express')
+const morgan = require('morgan')
+
 const app = express()
 
+
 app.use(express.json())
+app.use(morgan('tiny'))
 
 let persons = [
     {id: 1, name: "Arto Hellas", number: "040-123456"},
@@ -47,7 +51,7 @@ const generateId = () => {
 app.post('/api/persons', (req, res) => {
     const names = persons.map(person => person.name.toLowerCase())
     const body = req.body
-    
+
     if (!body.name) {
         return res.status(400).json({
             error: 'name missing'

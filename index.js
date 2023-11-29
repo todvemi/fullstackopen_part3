@@ -1,9 +1,15 @@
 const express = require('express')
+const cors = require('cors')
 const morgan = require('morgan')
 
 const app = express()
 
+app.use(cors())
 app.use(express.json())
+
+morgan.token('body', req => {
+    return JSON.stringify(req.body)
+})
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
 let persons = [
@@ -50,7 +56,6 @@ const generateId = () => {
 app.post('/api/persons', (req, res) => {
     const names = persons.map(person => person.name.toLowerCase())
     const body = req.body
-
     if (!body.name) {
         return res.status(400).json({
             error: 'name missing'
@@ -73,13 +78,9 @@ app.post('/api/persons', (req, res) => {
     
     persons = persons.concat(person)
     res.json(person)
-
-    morgan.token('body', req => {
-        return JSON.stringify(req.body)
-    })
 })
 
-const PORT = 3001
+const PORT =  process.env.PORT || 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
